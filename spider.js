@@ -84,11 +84,15 @@ async function getGameUrl(detailUrl) {
  */
 async function supplyGameUrl(gameList) {
     for (let i = 0; i < gameList.length; i++) {
-        let game = gameList[i];
-        game["link"] = await getGameUrl(game.detailUrl);
+        try {
+            let game = gameList[i];
+            game["link"] = await getGameUrl(game.detailUrl);
 
-        // 睡眠
-        sleep(500);
+            // 睡眠
+            sleep(500);
+        } catch (e) {
+            console.error("补充游戏url, 异常:"+e)
+        }
         console.log("补充游戏url, 当前进度:"+ i + ", 总数:"+ gameList.length);
     }
 
