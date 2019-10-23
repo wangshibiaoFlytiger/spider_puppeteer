@@ -1,6 +1,7 @@
 const puppeteer = require("puppeteer");
 const axios = require("axios");
 const fs = require("fs");
+const config = require("./config/config.js");
 
 crawGameList();
 
@@ -63,7 +64,7 @@ async function crawGameList(){
  * @returns {Promise<any>}
  */
 async function getGameUrl(detailUrl) {
-    const browser = await puppeteer.launch({headless: false});
+    const browser = await puppeteer.launch({executablePath: config.chromePath, headless: config.headless});
     let page = await browser.newPage();
     await page.goto(detailUrl);
     await page.click(".play .btn")
