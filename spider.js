@@ -64,7 +64,7 @@ async function crawGameList(){
  * @returns {Promise<any>}
  */
 async function getGameUrl(detailUrl) {
-    const browser = await puppeteer.launch({executablePath: config.chromePath, headless: config.headless});
+    const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox'], executablePath: config.chromePath, headless: config.headless});
     let page = await browser.newPage();
     await page.goto(detailUrl);
     await page.click(".play .btn")
