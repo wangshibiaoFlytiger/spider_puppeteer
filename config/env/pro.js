@@ -1,5 +1,5 @@
 var config = {
-    chromePath: "/root/chrome",
-    headless: false
+    chromePath: "/usr/bin/google-chrome",
+    headless: true
 };
 module.exports = config;

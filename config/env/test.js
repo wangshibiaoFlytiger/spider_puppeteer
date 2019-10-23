@@ -1,5 +1,5 @@
 var config = {
     chromePath: "/root/chrome",
-    headless: false
+    headless: true
 };
 module.exports = config;
