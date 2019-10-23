@@ -1,2 +1,9 @@
 一. 运行程序
 运行程序时, 需要设定环境变量NODE_ENV(如export NODE_ENV=pro)
+
+二. 使用pkg打包node应用为独立的可执行文件
+npm install pkg
+若执行pkg ./spider.js -t node10-linux后, 提示链接超时, 则解决方法如下：
+    从https://github.com/zeit/pkg-fetch/releases下载对应版本(如uploaded-v2.6-node-v10.15.3-linux-x64)到本地, 放到本地对应目录下(如~/.pkg-cache/v2.6/)
+    注意,需要重命名,把前缀改为fetched(如fetched-v10.15.3-linux-x64)
+pkg命令指定输入支持多种方式,详见https://jingsam.github.io/2018/03/02/pkg.html
