@@ -67,7 +67,12 @@ async function getGameUrl(detailUrl) {
     const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox'], executablePath: config.chromePath, headless: config.headless});
     let page = await browser.newPage();
     await page.goto(detailUrl);
-    await page.click(".play .btn")
+
+    // 点击开始游戏按钮
+    let playBtnSelector = ".play .btn";
+    await page.waitForSelector(playBtnSelector);
+    await page.click(playBtnSelector);
+
     // 取出游戏链接
     let gameIframeSelector = "iframe#flash22";
     await page.waitForSelector(gameIframeSelector)
