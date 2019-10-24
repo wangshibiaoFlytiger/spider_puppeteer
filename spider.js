@@ -1,7 +1,7 @@
+import {config} from "config";
 const puppeteer = require("puppeteer");
 const axios = require("axios");
 const fs = require("fs");
-const config = require("./config/config.js");
 
 crawGameList();
 

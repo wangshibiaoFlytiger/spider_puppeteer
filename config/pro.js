@@ -1,5 +1,5 @@
-var config = {
+let config = {
     chromePath: "/usr/bin/google-chrome",
     headless: true
 };
-module.exports = config;
+export {config};
