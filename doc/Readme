@@ -1,5 +1,10 @@
-一. 运行程序
-运行程序时, 需要设定环境变量NODE_ENV(如export NODE_ENV=pro)
+一. 命令详解
+1. pkg
+yarn pkg, 将工程打包为独立的可执行文件
+2. runPkg
+运行独立的可执行文件
+3. dev
+调试或运行工程代码, 且支持es6的import和export语法
 
 二. 使用pkg打包node应用为独立的可执行文件
 npm install pkg

@@ -1,4 +1,4 @@
-import {config} from "config";
+const config = require('config');
 const puppeteer = require("puppeteer");
 const axios = require("axios");
 const fs = require("fs");
@@ -64,7 +64,7 @@ async function crawGameList(){
  * @returns {Promise<any>}
  */
 async function getGameUrl(detailUrl) {
-    const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox'], executablePath: config.chromePath, headless: config.headless});
+    const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox'], executablePath: config.get("chromePath"), headless: config.get("headless")});
     try {
         let page = await browser.newPage();
         await page.goto(detailUrl);

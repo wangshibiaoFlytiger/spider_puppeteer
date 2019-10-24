@@ -1,17 +1,18 @@
 {
-  "bin": "./spider.js",
+  "bin": "./src/spider.js",
   "name": "spider_puppeteer",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "babel-node ./spider.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "pkg": "pkg ./package.json -t node10-linux --out-path=dist/"
+    "dev": "export NODE_ENV=dev && export NODE_CONFIG_DIR=./src/config && babel-node src/spider.js",
+    "pkg": "pkg ./package.json -t node10-linux --out-path=dist/",
+    "runPkg": "export NODE_ENV=dev && export NODE_CONFIG_DIR=./src/config && ./dist/spider_puppeteer",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "pkg": {
     "assets": [
-      "./config/env/*"
+      ""
     ]
   },
   "keywords": [],
@@ -22,6 +23,7 @@
     "babel-cli": "^6.26.0",
     "babel-preset-es2015": "^6.24.1",
     "config": "^3.2.3",
+    "mongoose": "^5.7.6",
     "pkg": "^4.4.0",
     "puppeteer": "^1.20.0"
   }
