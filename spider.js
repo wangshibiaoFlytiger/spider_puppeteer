@@ -65,18 +65,22 @@ async function crawGameList(){
  */
 async function getGameUrl(detailUrl) {
     const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox'], executablePath: config.chromePath, headless: config.headless});
-    let page = await browser.newPage();
-    await page.goto(detailUrl);
+    try {
+        let page = await browser.newPage();
+        await page.goto(detailUrl);
 
-    // 点击开始游戏按钮
-    let playBtnSelector = ".play .btn";
-    await page.waitForSelector(playBtnSelector);
-    await page.click(playBtnSelector);
+        // 点击开始游戏按钮
+        let playBtnSelector = ".play .btn";
+        await page.waitForSelector(playBtnSelector);
+        await page.click(playBtnSelector);
 
-    // 取出游戏链接
-    let gameIframeSelector = "iframe#flash22";
-    await page.waitForSelector(gameIframeSelector)
-    const gameUrl = await page.$eval(gameIframeSelector, el => el.src);
+        // 取出游戏链接
+        let gameIframeSelector = "iframe#flash22";
+        await page.waitForSelector(gameIframeSelector)
+        const gameUrl = await page.$eval(gameIframeSelector, el => el.src);
+    } catch (e) {
+        console.error("获取游戏的url, 异常:"+e);
+    }
     await browser.close();
 
     console.log("获取游戏的url, 完成, detailUrl:"+detailUrl+", gameUrl:"+gameUrl);
