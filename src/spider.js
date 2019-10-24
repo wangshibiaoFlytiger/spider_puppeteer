@@ -78,13 +78,14 @@ async function getGameUrl(detailUrl) {
         let gameIframeSelector = "iframe#flash22";
         await page.waitForSelector(gameIframeSelector)
         const gameUrl = await page.$eval(gameIframeSelector, el => el.src);
+        console.log("获取游戏的url, 完成, detailUrl:"+detailUrl+", gameUrl:"+gameUrl);
+        return gameUrl;
     } catch (e) {
         console.error("获取游戏的url, 异常:"+e);
     }
     await browser.close();
 
-    console.log("获取游戏的url, 完成, detailUrl:"+detailUrl+", gameUrl:"+gameUrl);
-    return gameUrl;
+    return "";
 }
 
 /**
@@ -92,10 +93,19 @@ async function getGameUrl(detailUrl) {
  * @param gameList
  */
 async function supplyGameUrl(gameList) {
+    let GameDao = require("./dao/gameDao");
+    let gameDao = new GameDao();
+    let Game = require("./model/game")
+
     for (let i = 0; i < gameList.length; i++) {
         try {
             let game = gameList[i];
             game["link"] = await getGameUrl(game.detailUrl);
+
+            // 写入mongo
+            let gameObject = new Game({"title": game.title, "label": game.label, "coverUrl": game.coverUrl, "link": game.link});
+            let result = await gameDao.save(gameObject);
+            console.log("补充游戏url, 插入完成", result);
 
             // 睡眠
             sleep(500);
