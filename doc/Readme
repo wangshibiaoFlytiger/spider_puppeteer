@@ -12,3 +12,7 @@ npm install pkg
     从https://github.com/zeit/pkg-fetch/releases下载对应版本(如uploaded-v2.6-node-v10.15.3-linux-x64)到本地, 放到本地对应目录下(如~/.pkg-cache/v2.6/)
     注意,需要重命名,把前缀改为fetched(如fetched-v10.15.3-linux-x64)
 pkg命令指定输入支持多种方式,详见https://jingsam.github.io/2018/03/02/pkg.html
+
+三. 爬虫框架puppeteer
+有2个包选择一个即可：pupeteer和puppeteer-core
+建议使用puppeteer-core, 因为pupeteer会默认下载一个浏览器,需要耗费下载时间
