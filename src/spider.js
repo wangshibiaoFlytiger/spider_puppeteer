@@ -3,13 +3,30 @@ const puppeteer = require("puppeteer");
 const axios = require("axios");
 const fs = require("fs");
 
-crawGameList();
+let browser;
+let browserPage;
+(async () => {
+    try {
+        browser = await puppeteer.launch({
+            args: ['--no-sandbox', '--disable-setuid-sandbox'],
+            executablePath: config.get("chromePath"),
+            headless: config.get("headless")
+        });
+        browserPage = await browser.newPage();
+        await crawGameList();
+    } catch (e) {
+        console.error("app异常", e)
+    } finally {
+        if (browser != null){
+            browser.close();
+        }
+    }
+})();
 
 /**
  * 爬取游戏列表
  */
 async function crawGameList(){
-    let gameList = [];
     let pageCount = 633;
     // 请求游戏api, 获取游戏列表
     for (let i = 0; i < pageCount; i++) {
@@ -24,7 +41,7 @@ async function crawGameList(){
             continue;
         }
 
-        // 组装游戏列表
+        // 爬取游戏列表中的游戏数据
         let respData = resp.data;
         let gameListRet = respData.data;
         for (let j = 0; j < gameListRet.length; j++) {
@@ -35,87 +52,81 @@ async function crawGameList(){
                 coverUrl: element.pic,
                 detailUrl: element.pczzylink
             };
-            gameList.push(game);
+
+            // 爬取游戏
+            try {
+                await crawGame(game);
+            } catch (e) {
+                console.error("爬取游戏列表, 爬取游戏列表中的游戏数据异常", game, e);
+            }
+
+            console.log("爬取游戏列表, 爬取游戏列表中的游戏数据, 当前进度", j, "总数", gameListRet.length);
         }
 
         // 睡眠
-        sleep(1000);
+        await sleep(1000);
         console.log("爬取游戏列表, 请求游戏api, 当前进度:"+i+", 总数:"+pageCount);
     }
-    console.log("爬取游戏列表, 请求游戏api, 完成");
-
-    // 补充游戏url
-    await supplyGameUrl(gameList);
-    console.log("爬取游戏列表, 补充游戏url, 完成");
-
-    // 将爬取结果数据写入文件
-    fs.writeFile('./gameList', JSON.stringify(gameList),  function(err) {
-        if (err) {
-            return console.error(err);
-        }
-
-        console.log("爬取游戏列表, 将爬取结果数据写入文件, 完成");
-    });
+    console.log("爬取游戏列表, 完成");
 }
 
 /**
- * 获取游戏的url
+ * 爬取游戏的url
  * @param detailUrl
  * @returns {Promise<any>}
  */
-async function getGameUrl(detailUrl) {
-    const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox'], executablePath: config.get("chromePath"), headless: config.get("headless")});
+async function crawGameUrl(detailUrl) {
     try {
-        let page = await browser.newPage();
-        await page.goto(detailUrl);
+        await browserPage.goto(detailUrl);
 
         // 点击开始游戏按钮
         let playBtnSelector = ".play .btn";
-        await page.waitForSelector(playBtnSelector);
-        await page.click(playBtnSelector);
+        await browserPage.waitForSelector(playBtnSelector);
+        await browserPage.click(playBtnSelector);
 
         // 取出游戏链接
         let gameIframeSelector = "iframe#flash22";
-        await page.waitForSelector(gameIframeSelector)
-        const gameUrl = await page.$eval(gameIframeSelector, el => el.src);
-        console.log("获取游戏的url, 完成, detailUrl:"+detailUrl+", gameUrl:"+gameUrl);
+        await browserPage.waitForSelector(gameIframeSelector)
+        const gameUrl = await browserPage.$eval(gameIframeSelector, el => el.src);
+        console.log("爬取游戏的url, 完成, detailUrl:"+detailUrl+", gameUrl:"+gameUrl);
         return gameUrl;
     } catch (e) {
-        console.error("获取游戏的url, 异常:"+e);
+        console.error("爬取游戏的url, 异常:"+e);
     }
-    await browser.close();
 
-    return "";
+    return Promise.resolve("");
 }
 
 /**
- * 补充游戏url
+ * 爬取游戏
  * @param gameList
  */
-async function supplyGameUrl(gameList) {
+async function crawGame(game) {
     let GameDao = require("./dao/gameDao");
     let gameDao = new GameDao();
     let Game = require("./model/game")
 
-    for (let i = 0; i < gameList.length; i++) {
-        try {
-            let game = gameList[i];
-            game["link"] = await getGameUrl(game.detailUrl);
-
-            // 写入mongo
-            let gameObject = new Game({"title": game.title, "label": game.label, "coverUrl": game.coverUrl, "link": game.link});
-            let result = await gameDao.save(gameObject);
-            console.log("补充游戏url, 插入完成", result);
-
-            // 睡眠
-            sleep(500);
-        } catch (e) {
-            console.error("补充游戏url, 异常:"+e)
-        }
-        console.log("补充游戏url, 当前进度:"+ i + ", 总数:"+ gameList.length);
+    // 判断游戏是否存在
+    let existGame = await gameDao.findOne({"title": game.title});
+    if (existGame){
+        console.log("爬取游戏, 已存在", existGame);
+        return Promise.resolve("已存在");
     }
 
-    console.log("补充游戏url, 完成, 总数:"+ gameList.length);
+    console.log("爬取游戏, 不存在, 即将入库", game);
+
+    // 爬取游戏的url
+    game["link"] = await crawGameUrl(game.detailUrl);
+
+    // 写入mongo
+    let gameObject = new Game({"title": game.title, "label": game.label, "coverUrl": game.coverUrl, "link": game.link, "status": 1});
+    let result = await gameDao.save(gameObject);
+    console.log("爬取游戏, 插入完成", result);
+
+    // 睡眠
+    await sleep(500);
+
+    console.log("爬取游戏, 完成", game);
 }
 
 /**

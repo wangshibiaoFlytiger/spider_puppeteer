@@ -1,6 +1,6 @@
 {
     "chromePath": "/usr/bin/google-chrome",
-    "headless": false,
+    "headless": true,
     "mongo": {
     "uri": "mongodb://localhost:27017/miguo"
     }

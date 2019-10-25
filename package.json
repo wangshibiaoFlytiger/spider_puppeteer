@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "export NODE_ENV=dev && export NODE_CONFIG_DIR=./src/config && babel-node src/spider.js",
-    "pkg": "pkg ./package.json -t node10-linux --out-path=dist/",
+    "pkg": "rm -f ./dist/* && pkg ./package.json -t node10-linux --out-path=dist/",
     "runPkg": "export NODE_ENV=dev && export NODE_CONFIG_DIR=./src/config && ./dist/spider_puppeteer",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
