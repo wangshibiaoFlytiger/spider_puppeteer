@@ -21,25 +21,27 @@ const puppeteer = require("puppeteer-core");
 const axios = require("axios");
 const fs = require("fs");
 
-let browser;
-let browserPage;
-(async () => {
-    try {
-        browser = await puppeteer.launch({
-            args: ['--no-sandbox', '--disable-setuid-sandbox'],
-            executablePath: config.get("spider.chromePath"),
-            headless: config.get("spider.headless")
-        });
-        browserPage = await browser.newPage();
-        await crawGameList();
-    } catch (e) {
-        console.error("app异常", e)
-    } finally {
-        if (browser != null){
-            browser.close();
+if (config.get("spider.autoStart")){
+    let browser;
+    let browserPage;
+    (async () => {
+        try {
+            browser = await puppeteer.launch({
+                args: ['--no-sandbox', '--disable-setuid-sandbox'],
+                executablePath: config.get("spider.chromePath"),
+                headless: config.get("spider.headless")
+            });
+            browserPage = await browser.newPage();
+            await crawGameList();
+        } catch (e) {
+            console.error("app异常", e)
+        } finally {
+            if (browser != null){
+                browser.close();
+            }
         }
-    }
-})();
+    })();
+}
 
 /**
  * 爬取游戏列表
