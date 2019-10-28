@@ -22,6 +22,7 @@ const axios = require("axios");
 const fs = require("fs");
 
 if (config.get("spider.autoStart")){
+    console.log("启动爬虫, spider.autoStart:"+config.get("spider.autoStart"));
     let browser;
     let browserPage;
     (async () => {
