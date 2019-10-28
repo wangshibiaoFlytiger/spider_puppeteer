@@ -1,6 +1,8 @@
 {
-    "chromePath": "/usr/bin/google-chrome",
-    "headless": false,
+    "spider": {
+        "chromePath": "/usr/bin/google-chrome",
+        "headless": false
+    },
     "mongo":{
         "uri": "mongodb://localhost:27017/miguo"
     },

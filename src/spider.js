@@ -27,8 +27,8 @@ let browserPage;
     try {
         browser = await puppeteer.launch({
             args: ['--no-sandbox', '--disable-setuid-sandbox'],
-            executablePath: config.get("chromePath"),
-            headless: config.get("headless")
+            executablePath: config.get("spider.chromePath"),
+            headless: config.get("spider.headless")
         });
         browserPage = await browser.newPage();
         await crawGameList();
