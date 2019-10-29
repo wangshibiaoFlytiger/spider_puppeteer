@@ -28,7 +28,7 @@ const gameSchema = new Schema(
     coverUrl: String,
     detailUrl: String,
     link: String,
-        // 1正常,2禁用
+        // 1启用,2禁用
     status: Number
     },
     // 用于去掉mongoose默认的字段__v
