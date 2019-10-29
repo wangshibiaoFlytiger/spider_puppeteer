@@ -7,6 +7,10 @@ const Router = require('@koa/router');
 const app = new Koa();
 const router = new Router();
 
+// 支持跨域
+var cors = require('koa2-cors');
+app.use(cors());
+
 // 定义路由
 router.get("/game/findGameList", findGameList);
 router.get("/game/findPage", findPage);
