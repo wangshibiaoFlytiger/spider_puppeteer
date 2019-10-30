@@ -29,7 +29,7 @@ async function findPage(ctx, next) {
     let pageSize = Number(ctx.query.pageSize)
 
     // 分页查询记录列表
-    let gameListPage = await gameDao.findPage(pageNo, pageSize, {}, {});
+    let gameListPage = await gameDao.findPage(pageNo, pageSize, {}, {status: 1});
     console.log("分页列表接口, ", gameListPage);
 
     ctx.response.body = {

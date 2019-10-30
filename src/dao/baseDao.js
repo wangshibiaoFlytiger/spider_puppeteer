@@ -108,7 +108,33 @@ class BaseDao {
                  */
                 pageDataList: function (done) {
                     let offset = (pageNo - 1) * pageSize;
-                    Model.find(queryParams).sort(sortParams).skip(offset).limit(pageSize).exec(function (err, pageDataList) {
+                     Model.aggregate([
+                            {
+                                $match: queryParams
+                            },
+                             {
+                                $sort: sortParams
+                             },
+                            {
+                                $skip: offset
+                            },
+                            {
+                                $limit: pageSize
+                            },
+                            {
+                                $project: {
+                                    id: "$_id",
+                                    // 不显示_id字段
+                                    _id: 0,
+                                    title: "$title",
+                                    label: "$label",
+                                    coverUrl: "$coverUrl",
+                                    detailUrl: "$detailUrl",
+                                    link: "$link",
+                                    status: "$status"
+                                }
+                            }
+                        ]).exec(function (err, pageDataList) {
                         if (err){
                             console.error("查询分页列表, 查询当前页数据列表, 异常", err)
                         }
