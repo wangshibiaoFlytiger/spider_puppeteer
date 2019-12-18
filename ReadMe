@@ -1,0 +1,6 @@
+项目原始仓库地址: https://github.com/wangshibiaoFlytiger/spider_puppeteer
+#若本项目给您带来收获, 还请您动动小拇指,右上角给点个赞哈,万分感谢哈哈!!!
+
+nodejs puppeteer爬虫开发脚手架
+puppeteer是google开发的headless chrome浏览器, 用于爬取动态渲染的网页
+本项目是爬取4399小游戏的数据
